@@ -1,6 +1,6 @@
 {
   "name": "saiyandex",
-  "main": "expo-router/entry",
+  "main": "expo/AppEntry.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
-    "@react-native-async-storage/async-storage": "^3.0.2",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^7.15.9",
     "@react-navigation/elements": "^2.9.10",
     "@react-navigation/native": "^7.2.2",
@@ -24,6 +24,7 @@
     "expo-device": "~55.0.10",
     "expo-font": "~55.0.4",
     "expo-glass-effect": "~55.0.8",
+    "expo-haptics": "^55.0.9",
     "expo-image": "~55.0.6",
     "expo-linear-gradient": "^55.0.9",
     "expo-linking": "~55.0.9",
