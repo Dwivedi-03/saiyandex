@@ -6,9 +6,9 @@
 
 **A feature-rich React Native mobile application for exploring the Dragon Ball universe**
 
-[![React Native](https://img.shields.io/badge/React%20Native-0.76-blue.svg)](https://reactnative.dev/)
-[![Expo](https://img.shields.io/badge/Expo-52.0-black.svg)](https://expo.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![React Native](https://img.shields.io/badge/React%20Native-0.83.4-blue.svg)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/Expo-~55.0.9-black.svg)](https://expo.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-~5.9.2-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 [Features](#features) • [Screenshots](#screenshots) • [Installation](#installation) • [Usage](#usage) • [Tech Stack](#tech-stack)
@@ -76,11 +76,11 @@ This project was built to fulfill the following requirements:
 
 | Characters List                                  | Character Detail                         | Planets                                    | Favorites                                      |
 | ------------------------------------------------ | ---------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
-| ![Characters](./docs/screenshots/characters.png) | ![Detail](./docs/screenshots/detail.png) | ![Planets](./docs/screenshots/planets.png) | ![Favorites](./docs/screenshots/favorites.png) |
+| ![Characters](./docs/Characters.jpeg) | ![Detail](./docs/Details.jpeg) | ![Planets](./docs/Planet.jpeg) | ![Favorites](./docs/Favorite.jpeg) |
 
 | Settings Dark                                          | Settings Light                                           | Search                                   | Filter                                   |
 | ------------------------------------------------------ | -------------------------------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| ![Settings Dark](./docs/screenshots/settings-dark.png) | ![Settings Light](./docs/screenshots/settings-light.png) | ![Search](./docs/screenshots/search.png) | ![Filter](./docs/screenshots/filter.png) |
+| ![Settings Dark](./docs/Settings_dark.jpeg) | ![Settings Light](./docs/Setting_light.jpeg) | ![Search](./docs/Search.jpeg) | ![Filter](./docs/Filter.jpeg) |
 
 </div>
 
