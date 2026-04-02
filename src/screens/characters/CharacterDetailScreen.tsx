@@ -1,35 +1,78 @@
-import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useTheme } from "../../context/ThemeContext";
-import { useFavorites } from "../../context/FavoritesContext";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { Character, Planet } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect, useState } from "react";
 import {
-  getAuraColor,
-  getRaceIcon,
-  getGenderIcon,
-  getAffilationColor,
-} from "../../utils/helpers";
+  Image,
+  Modal,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { BlurView } from "expo-blur";
 import EnergyAura from "../../components/EnergyAura";
 import PowerLevelMeter from "../../components/PowerLevelMeter";
-import { Share } from "react-native";
+import { useFavorites } from "../../context/FavoritesContext";
+import { useTheme } from "../../context/ThemeContext";
+import { getCharacterById } from "../../services/api";
+import {
+  getAffilationColor,
+  getAuraColor,
+  getGenderIcon,
+  getRaceIcon,
+} from "../../utils/helpers";
+import PlanetCard from "@/components/PlanetCard";
+import { SCREEN_NAMES } from "@/utils/constants";
 
 const CharacterDetailScreen = ({ route, navigation }: any) => {
-  const { character } = route.params;
+  const { id } = route.params;
   const { theme } = useTheme();
+  const [loading, setLoading] = useState(true);
+  const [character, setCharacter] = useState<Character | null>(null);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const isFav = character ? isFavorite(character.id) : false;
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const auraColor = getAuraColor(character.race, theme.isDark);
-  const isFav = isFavorite(character.id);
+  const fetchCharacterDetails = async (id: number) => {
+    try {
+      setLoading(true);
+      const data = await getCharacterById(id);
+      setCharacter(data);
+    } catch (error) {
+      console.error("Error fetching character details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) fetchCharacterDetails(id);
+  }, [id]);
+
+  const handleShare = async () => {
+    try {
+      if (!character) return;
+
+      await Share.share({
+        message: `Check out ${character.name} from Dragon Ball! Power Level: ${character.ki}`,
+      });
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
+  const handlePlanetPress = (planet: Planet) => {
+    navigation.navigate(SCREEN_NAMES.PLANET_DETAIL, { id: planet.id });
+  };
 
   React.useLayoutEffect(() => {
+    if (!character) return;
+
     navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: "row" }}>
@@ -40,7 +83,10 @@ const CharacterDetailScreen = ({ route, navigation }: any) => {
               color={theme.colors.text}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => toggleFavorite(character)} style={{ marginRight: 16 }}>
+          <TouchableOpacity
+            onPress={() => toggleFavorite(character)}
+            style={{ marginRight: 16 }}
+          >
             <Ionicons
               name={isFav ? "heart" : "heart-outline"}
               size={28}
@@ -62,15 +108,17 @@ const CharacterDetailScreen = ({ route, navigation }: any) => {
     });
   }, [navigation, isFav]);
 
-  const handleShare = async () => {
-    try {
-      await Share.share({
-        message: `Check out ${character.name} from Dragon Ball! Power Level: ${character.ki}`,
-      });
-    } catch (error) {
-      console.error("Error sharing:", error);
-    }
-  };
+  if (loading || !character) {
+    return (
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <LoadingSpinner />
+      </View>
+    );
+  }
+
+  const auraColor = getAuraColor(character.race, theme.isDark);
 
   return (
     <ScrollView
@@ -184,6 +232,72 @@ const CharacterDetailScreen = ({ route, navigation }: any) => {
           </View>
         )}
 
+        {/* Planet */}
+        {character.originPlanet && (
+          <View
+            style={[
+              styles.section,
+              { paddingBottom: 32 },
+              { backgroundColor: theme.colors.cardBg },
+            ]}
+          >
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Origin Planet
+            </Text>
+            <Text
+              style={[
+                styles.description,
+                { color: theme.colors.textSecondary },
+              ]}
+            >
+              <PlanetCard
+                planet={character.originPlanet}
+                onPress={() =>
+                  handlePlanetPress(character.originPlanet as Planet)
+                }
+              />
+            </Text>
+          </View>
+        )}
+
+        {/* Transformations */}
+        {character.transformations && character.transformations.length > 0 && (
+          <View
+            style={[styles.section, { backgroundColor: theme.colors.cardBg }]}
+          >
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Transformations ({character.transformations.length})
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {character.transformations.map((trans: any, index: number) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedImage(trans.image);
+                    setModalVisible(true);
+                  }}
+                  key={index}
+                  style={styles.transformationCard}
+                >
+                  <Image
+                    source={{ uri: trans.image }}
+                    style={styles.transformationImage}
+                    resizeMode="contain"
+                  />
+                  <Text
+                    style={[
+                      styles.transformationName,
+                      { color: theme.colors.text },
+                    ]}
+                    numberOfLines={2}
+                  >
+                    {trans.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* Description */}
         {character.description && (
           <View
@@ -203,37 +317,37 @@ const CharacterDetailScreen = ({ route, navigation }: any) => {
           </View>
         )}
 
-        {/* Transformations */}
-        {character.transformations && character.transformations.length > 0 && (
-          <View
-            style={[styles.section, { backgroundColor: theme.colors.cardBg }]}
-          >
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Transformations ({character.transformations.length})
-            </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {character.transformations.map((trans: any, index: number) => (
-                <View key={index} style={styles.transformationCard}>
-                  <Image
-                    source={{ uri: trans.image }}
-                    style={styles.transformationImage}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={[
-                      styles.transformationName,
-                      { color: theme.colors.text },
-                    ]}
-                    numberOfLines={2}
-                  >
-                    {trans.name}
-                  </Text>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        )}
       </View>
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          {/* Blur Background */}
+          <BlurView intensity={40} style={StyleSheet.absoluteFill} />
+
+          {/* Overlay tint */}
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: theme.colors.background + "80" },
+            ]}
+          />
+
+          {/* Close on tap outside */}
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}
+          >
+            {/* Image Card */}
+            <View style={[styles.modalContent]}>
+              <Image
+                source={{ uri: selectedImage! }}
+                style={styles.modalImage}
+                resizeMode="contain"
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -333,6 +447,25 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     marginRight: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalContent: {
+    width: 300,
+    height: 450,
+    borderRadius: 20,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalImage: {
+    width: "100%",
+    height: "100%",
   },
 });
 

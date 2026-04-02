@@ -17,7 +17,7 @@ const FavoritesScreen = ({ navigation }: FavoritesScreenProps) => {
   const { favorites, loading } = useFavorites();
 
   const handleCharacterPress = (character: any) => {
-    navigation.navigate(SCREEN_NAMES.CHARACTER_DETAIL, { character });
+    navigation.navigate(SCREEN_NAMES.CHARACTER_DETAIL, { id: character.id });
   };
 
   if (loading) {

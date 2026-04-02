@@ -104,24 +104,11 @@ const PlanetCard: React.FC<PlanetCardProps> = ({ planet, onPress }) => {
           </View>
 
           <View style={styles.infoContainer}>
-            <Text style={[styles.name, { color: theme.colors.text }]}>
-              {planet.name}
-            </Text>
-
-            {planet.description && (
-              <Text
-                style={[
-                  styles.description,
-                  { color: theme.colors.textSecondary },
-                ]}
-                numberOfLines={2}
-              >
-                {planet.description}
-              </Text>
-            )}
-
             <View style={styles.detailsRow}>
-              <View style={styles.detailItem}>
+              <Text style={[styles.name, { color: theme.colors.text }]}>
+                {planet.name}
+              </Text>
+              {/* <View style={styles.detailItem}>
                 <Ionicons
                   name="people-outline"
                   size={16}
@@ -135,7 +122,7 @@ const PlanetCard: React.FC<PlanetCardProps> = ({ planet, onPress }) => {
                 >
                   {planet.characters?.length || 0} Characters
                 </Text>
-              </View>
+              </View> */}
 
               {planet.isDestroyed && (
                 <View
@@ -155,6 +142,18 @@ const PlanetCard: React.FC<PlanetCardProps> = ({ planet, onPress }) => {
                 </View>
               )}
             </View>
+
+            {planet.description && (
+              <Text
+                style={[
+                  styles.description,
+                  { color: theme.colors.textSecondary },
+                ]}
+                numberOfLines={2}
+              >
+                {planet.description}
+              </Text>
+            )}
           </View>
         </LinearGradient>
       </TouchableOpacity>
@@ -220,7 +219,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    marginBottom: 12,
+    paddingTop: 4,
     lineHeight: 20,
   },
   detailsRow: {

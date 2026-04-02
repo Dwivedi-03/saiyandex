@@ -46,7 +46,7 @@ const PlanetListScreen = ({ navigation }: { navigation: any }) => {
   };
 
   const handlePlanetPress = (planet: Planet) => {
-    navigation.navigate(SCREEN_NAMES.PLANET_DETAIL, { planet });
+    navigation.navigate(SCREEN_NAMES.PLANET_DETAIL, { id: planet.id });
   };
 
   const filteredPlanets = planets.filter((planet) =>

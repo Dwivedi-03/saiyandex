@@ -7,8 +7,8 @@ import { SCREEN_NAMES } from "../utils/constants";
 // Import Stack Navigators (we'll create these next)
 import CharacterStack from "./CharacterStack";
 import PlanetStack from "./PlanetStack";
-import FavoritesScreen from "../screens/favorites/FavoritesScreen";
 import SettingsScreen from "../screens/settings/SettingsScreen";
+import FavoritesStack from "./FavoritesStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -71,7 +71,7 @@ const TabNavigator: React.FC = () => {
       />
       <Tab.Screen
         name={SCREEN_NAMES.FAVORITES_TAB}
-        component={FavoritesScreen}
+        component={FavoritesStack}
         options={{
           title: "Favorites",
         }}

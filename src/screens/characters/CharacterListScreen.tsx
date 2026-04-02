@@ -59,7 +59,7 @@ const CharacterListScreen = ({ navigation }: { navigation: any }) => {
   };
 
   const handleCharacterPress = (character: Character) => {
-    navigation.navigate(SCREEN_NAMES.CHARACTER_DETAIL, { character });
+    navigation.navigate(SCREEN_NAMES.CHARACTER_DETAIL, { id: character.id });
   };
 
   const filteredCharacters = characters.filter((char) => {

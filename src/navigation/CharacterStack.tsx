@@ -5,6 +5,7 @@ import { SCREEN_NAMES } from "../utils/constants";
 
 import CharacterListScreen from "../screens/characters/CharacterListScreen";
 import CharacterDetailScreen from "../screens/characters/CharacterDetailScreen";
+import PlanetDetailScreen from "@/screens/planets/PlanetDetailScreen";
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,13 @@ const CharacterStack: React.FC = ({ route, navigation }: any) => {
       <Stack.Screen
         name={SCREEN_NAMES.CHARACTER_DETAIL}
         component={CharacterDetailScreen}
+        options={() => ({
+          title: route.params?.character?.name || "Details",
+        })}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.PLANET_DETAIL}
+        component={PlanetDetailScreen}
         options={() => ({
           title: route.params?.character?.name || "Details",
         })}

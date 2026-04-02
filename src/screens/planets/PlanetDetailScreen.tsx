@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import { useTheme } from "../../context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { SCREEN_NAMES } from "../../utils/constants";
 import { Planet, Character } from "../../types";
+import { getPlanetById } from "@/services/api";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Props {
   route: any;
@@ -21,12 +23,40 @@ interface Props {
 }
 
 const PlanetDetailScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { planet } = route.params as { planet: Planet };
+  const { id } = route.params;
+  const [planet, setPlanet] = React.useState<Planet>({} as Planet);
+  const [loading, setLoading] = React.useState(true);
   const { theme } = useTheme();
 
   const handleCharacterPress = (character: Character): void => {
-    navigation.navigate(SCREEN_NAMES.CHARACTER_DETAIL, { character });
+    navigation.navigate(SCREEN_NAMES.CHARACTER_DETAIL, { id: character.id });
   };
+
+  const fetchPlanetDetails = async (id: number) => {
+    try {
+      setLoading(true);
+      const data = await getPlanetById(id);
+      setPlanet(data);
+    } catch (error) {
+      console.error("Error fetching planet details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlanetDetails(id);
+  }, [id]);
+
+  if (loading) {
+    return (
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <LoadingSpinner />
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -81,7 +111,7 @@ const PlanetDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             style={[styles.section, { backgroundColor: theme.colors.cardBg }]}
           >
             <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Notable Characters ({planet.characters.length})
+              Characters ({planet.characters.length})
             </Text>
             {planet.characters.map((character: Character, index: number) => (
               <TouchableOpacity
